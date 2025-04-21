@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diagnosis Result</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <script src="https://kit.fontawesome.com/a2d9a1a0c7.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg-dark: #0f2027;
+      --bg-light: #f5f5f5;
+      --text-color: #fff;
+      --accent: #64ffda;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark), #203a43, #2c5364);
+      color: var(--text-color);
+      min-height: 100vh;
+      padding: 40px 0;
+      transition: 0.3s ease;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      margin: auto;
+      max-width: 1000px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .top-nav h2 {
+      font-weight: 600;
+    }
+
+    .top-nav a {
+      text-decoration: none;
+      color: var(--accent);
+      transition: 0.3s;
+    }
+
+    .top-nav a:hover {
+      text-decoration: underline;
+    }
+
+    .dark-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+
+    .section-title {
+      color: var(--accent);
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .info-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .info-box {
+      background-color: rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 15px 20px;
+      flex: 1 1 30%;
+      min-width: 150px;
+      text-align: center;
+    }
+
+    .info-box h6 {
+      margin-bottom: 4px;
+      color: #90caf9;
+      font-size: 0.9rem;
+    }
+
+    .info-box p {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .xray-img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid var(--accent);
+      margin-bottom: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .xray-img:hover {
+      transform: scale(1.03);
+    }
+
+    .diagnosis {
+      background-color: rgba(255,255,255,0.07);
+      border-left: 5px solid var(--accent);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 25px;
+    }
+
+    .diagnosis h5 {
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .btn-action {
+      margin-top: 20px;
+      margin-right: 10px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 500;
+      transition: 0.3s ease;
+    }
+
+    .btn-download {
+      background-color: #00c853;
+      color: white;
+    }
+
+    .btn-download:hover {
+      background-color: #00b341;
+    }
+
+    .btn-whatsapp {
+      background-color: #25d366;
+      color: white;
+    }
+
+    .btn-whatsapp:hover {
+      background-color: #1ebe5b;
+    }
+
+    .btn-email {
+      background-color: #1e88e5;
+      color: white;
+    }
+
+    .btn-email:hover {
+      background-color: #1565c0;
+    }
+
+    @media (max-width: 768px) {
+      .info-row {
+        flex-direction: column;
+      }
+
+      .top-nav {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dark-toggle" onclick="toggleDarkMode()">
+    <i class="fas fa-adjust"></i>
+  </div>
+
+  <div class="container">
+    <div class="glass-card">
+
+      <div class="top-nav">
+        <h2><i class="fas fa-notes-medical me-2"></i>Diagnosis Summary</h2>
+        <a href="/dashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+
+      <!-- Patient Info -->
+      <div class="section-title">👤 Patient Info</div>
+      <div class="info-row">
+        <div class="info-box">
+          <h6>Name</h6>
+          <p>{{ user_name }}</p>
+        </div>
+        <div class="info-box">
+          <h6>Age</h6>
+          <p>{{ user_age }}</p>
+        </div>
+        <div class="info-box">
+          <h6>Blood Group</h6>
+          <p>{{ user_blood }}</p>
+        </div>
+      </div>
+
+      <!-- X-Ray Images -->
+      <div class="section-title">🖼️ X-ray Images</div>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="{{ image_url }}" class="xray-img" alt="Original X-ray" />
+          <p class="text-center">Original</p>
+        </div>
+        {% if heatmap_image_url %}
+        <div class="col-md-6">
+          <img src="{{ heatmap_image_url }}" class="xray-img" alt="Heatmap" />
+          <p class="text-center">Heatmap</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Diagnosis -->
+      <div class="diagnosis">
+        <h5>🧠 Diagnosis: {{ diagnosis_text }}</h5>
+        <p>Confidence: <strong>{{ confidence_text }}%</strong></p>
+      </div>
+
+      <!-- Precautions -->
+      <div class="diagnosis">
+        <h5>📌 Suggested Precautions</h5>
+        <p>{{ precautions }}</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <a href="/download_report/{{ report_id }}" class="btn btn-action btn-download">
+        <i class="fas fa-file-download"></i> Download Report
+      </a>
+
+      <button class="btn btn-action btn-whatsapp" onclick="shareWhatsApp()">
+        <i class="fab fa-whatsapp"></i> WhatsApp
+      </button>
+
+      <button class="btn btn-action btn-email" onclick="shareEmail()">
+        <i class="fas fa-envelope"></i> Email
+      </button>
+
+    </div>
+  </div>
+
+  <script>
+    function shareWhatsApp() {
+      const name = "{{ user_name }}";
+      const diagnosis = "{{ diagnosis_text }}";
+      const confidence = "{{ confidence_text }}";
+      const reportLink = "{{ request.url_root }}download_report/{{ user_id }}".replace('http://', 'https://');
+      const shareText = `🩻 *Diagnosis Report*\n👤 Name: ${name}\n💬 ${diagnosis}\n📊 Confidence: ${confidence}%\n🔗 Report: ${reportLink}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, "_blank");
+    }
+
+    function shareEmail() {
+      const name = "{{ user_name }}";
+      const diagnosis = "{{ diagnosis_text }}";
+      const confidence = "{{ confidence_text }}";
+      const reportLink = "{{ request.url_root }}download_report/{{ user_id }}".replace('http://', 'https://');
+      const subject = `X-Ray Report: ${name}`;
+      const body = `Hello,\n\nHere is the diagnosis:\nName: ${name}\nDiagnosis: ${diagnosis}\nConfidence: ${confidence}%\nReport: ${reportLink}\n\nRegards,\nX-ray AI App`;
+      window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+
+    function toggleDarkMode() {
+      const body = document.body;
+      body.style.background = body.style.background.includes('f5f5f5') ?
+        'linear-gradient(135deg, #0f2027, #203a43, #2c5364)' :
+        '#f5f5f5';
+      body.style.color = body.style.color === '#000' ? '#fff' : '#000';
+    }
+  </script>
+</body>
+</html>

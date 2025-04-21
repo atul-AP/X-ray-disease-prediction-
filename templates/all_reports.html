@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Reports</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #f4f6f9;
+      color: #333;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background: #2c3e50;
+      color: white;
+    }
+
+    .header h2 {
+      margin: 0;
+    }
+
+    .back-btn {
+      background-color: #16a085;
+      border: none;
+      padding: 8px 14px;
+      color: white;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .back-btn:hover {
+      background-color: #12876f;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filters select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .reports-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 0 20px 40px;
+    }
+
+    .report-card {
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+      overflow: hidden;
+      max-width: 350px;
+      width: 100%;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .report-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .report-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-bottom: 1px solid #eee;
+    }
+
+    .report-info {
+      padding: 16px;
+    }
+
+    .report-info h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    .report-info p {
+      margin: 6px 0;
+      font-size: 0.95rem;
+    }
+
+    .actions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .btn-primary, .actions button {
+      padding: 8px 14px;
+      background-color: #3498db;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .btn-primary:hover, .actions button:hover {
+      background-color: #2980b9;
+    }
+
+    .actions button {
+      background-color: #2ecc71;
+    }
+
+    .actions button:hover {
+      background-color: #27ae60;
+    }
+
+    /* 🔄 Loading spinner */
+    #loader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #f4f6f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #3498db;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+  </style>
+</head>
+<body>
+  <!-- 🔄 Loading animation -->
+  <div id="loader">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- 🧭 Header -->
+  <div class="header">
+    <h2>🩺 All Reports</h2>
+    <a href="/dashboard" class="back-btn">← Back to Dashboard</a>
+  </div>
+
+  <!-- 🔍 Filters -->
+  <div class="filters">
+    <select id="filter-disease">
+      <option value="">Filter by Disease</option>
+      {% for report in reports|unique(attribute='diagnosis') %}
+      <option value="{{ report.diagnosis }}">{{ report.diagnosis }}</option>
+      {% endfor %}
+    </select>
+
+    <select id="filter-age">
+      <option value="">Sort by Age</option>
+      <option value="asc">Age: Low to High</option>
+      <option value="desc">Age: High to Low</option>
+    </select>
+  </div>
+
+  <!-- 🧾 Reports -->
+  <div class="reports-container" id="reports-container">
+    {% for report in reports %}
+    <div class="report-card" data-diagnosis="{{ report.diagnosis }}" data-age="{{ report.age }}">
+      <img src="{{ url_for('static', filename='uploads/' ~ report.filename) }}" alt="X-ray Image" />
+      <div class="report-info">
+        <h3>{{ report.patient_name }}, Age {{ report.age }}</h3>
+        <p><strong>Disease:</strong> {{ report.diagnosis }}</p>
+        <p><strong>Confidence:</strong> {{ report.confidence }}%</p>
+        <div class="actions">
+          <a href="{{ url_for('download_report', report_id=report._id) }}" class="btn-primary">Download PDF</a>
+          <a href="{{ url_for('share_report', report_id=report._id) }}"><button>Share</button></a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    // Hide loader after content is loaded
+    window.addEventListener('load', () => {
+      document.getElementById('loader').style.display = 'none';
+    });
+
+    // Filter & sort functionality
+    const filterDisease = document.getElementById('filter-disease');
+    const filterAge = document.getElementById('filter-age');
+    const cards = Array.from(document.querySelectorAll('.report-card'));
+    const container = document.getElementById('reports-container');
+
+    function updateReports() {
+      const disease = filterDisease.value;
+      const ageSort = filterAge.value;
+
+      let filtered = cards;
+
+      if (disease) {
+        filtered = filtered.filter(card => card.dataset.diagnosis === disease);
+      }
+
+      if (ageSort) {
+        filtered.sort((a, b) => {
+          const ageA = parseInt(a.dataset.age);
+          const ageB = parseInt(b.dataset.age);
+          return ageSort === 'asc' ? ageA - ageB : ageB - ageA;
+        });
+      }
+
+      container.innerHTML = '';
+      filtered.forEach(card => container.appendChild(card));
+    }
+
+    filterDisease.addEventListener('change', updateReports);
+    filterAge.addEventListener('change', updateReports);
+  </script>
+</body>
+</html>

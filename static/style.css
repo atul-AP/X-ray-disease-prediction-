@@ -1,0 +1,380 @@
+/* ===== Base Reset ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ===== Global Body Styles ===== */
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #121212, #1f1f1f);
+  color: #fff;
+  overflow-x: hidden;
+  position: relative;
+  transition: background 0.4s, color 0.4s;
+}
+
+/* ===== Bubble Background Animation ===== */
+.background .bubbles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url('https://i.ibb.co/9VzLznp/bubble-bg.png') no-repeat center;
+  background-size: cover;
+  opacity: 0.06;
+  z-index: -1;
+}
+
+/* ===== Theme Toggle Button ===== */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+  background: white;
+  color: black;
+  border: 1px solid #ddd;
+  border-radius: 50px;
+  padding: 10px 15px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: 0.3s ease;
+}
+.theme-toggle:hover {
+  background-color: #ddd;
+}
+
+/* ===== Container ===== */
+.container {
+  max-width: 500px;
+  margin: 5% auto;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(6.5px);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== Card Component ===== */
+.card {
+  background: white;
+  color: black;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+}
+.dark-mode .card {
+  background-color: #1e1e1e;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== Headings ===== */
+h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* ===== Form Inputs & Uploads ===== */
+input,
+.custom-file-upload {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.2);
+}
+.custom-file-upload {
+  cursor: pointer;
+}
+
+/* ===== Buttons ===== */
+button,
+form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background-color 0.3s ease;
+}
+button:hover,
+form button:hover {
+  background-color: #45a049;
+}
+
+/* ===== Loader ===== */
+#loader {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  color: #00ffcc;
+}
+
+/* ===== Result Box ===== */
+.result {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  word-wrap: break-word;
+}
+
+/* ===== Image Preview ===== */
+.card-img-top {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* ===== Table Styling ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  color: #fff;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+.dark-mode table,
+.dark-mode th,
+.dark-mode td {
+  border-color: #444;
+  color: #eee;
+}
+
+/* ===== Flatpickr Styling Fix ===== */
+.flatpickr-calendar {
+  font-size: 1rem !important;
+  transform: scale(1.3);
+  transform-origin: top;
+  z-index: 9999;
+}
+.flatpickr-day.today {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+/* ===== Dark Mode Global Styles ===== */
+.dark-mode {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+.dark-mode input,
+.dark-mode .custom-file-upload {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+.dark-mode .theme-toggle {
+  background-color: #333;
+  color: white;
+  border-color: #555;
+}
+.dark-mode button,
+.dark-mode form button {
+  background-color: #1e90ff;
+}
+.dark-mode button:hover,
+.dark-mode form button:hover {
+  background-color: #187bcd;
+}
+
+/* ===== Utility Classes ===== */
+.hidden {
+  display: none;
+}
+
+/* ===== AI Chatbot Styles ===== */
+.chatbot {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  padding: 16px;
+  z-index: 999;
+  color: white;
+}
+.chatbot strong {
+  font-size: 1.1rem;
+}
+.chat-input {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.chat-input textarea {
+  flex: 1;
+  padding: 8px;
+  border-radius: 10px;
+  border: none;
+  resize: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 0.9rem;
+}
+.chat-input textarea:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.chat-input button {
+  background-color: #1e90ff;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.chat-input button:hover {
+  background-color: #187bcd;
+}
+.dark-mode .chatbot {
+  background: rgba(30, 30, 30, 0.9);
+}
+
+
+/* ===== Report Card Styling ===== */
+.report-card {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  margin: 20px auto;
+  padding: 16px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 90%;
+  max-width: 800px;
+}
+
+.report-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+}
+
+.report-card img {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-right: 20px;
+  border: 2px solid #4CAF50;
+}
+
+.report-info h3 {
+  margin-bottom: 10px;
+  font-size: 1.4rem;
+}
+
+.report-info p {
+  margin: 4px 0;
+  color: #ccc;
+}
+
+.report-info .actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.download-btn, .share-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-weight: 500;
+}
+
+.download-btn {
+  background-color: #1e90ff;
+  color: white;
+}
+
+.download-btn:hover {
+  background-color: #187bcd;
+}
+
+.share-btn {
+  background-color: #00cc88;
+  color: white;
+}
+
+.share-btn:hover {
+  background-color: #00aa6e;
+}
+
+
+
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  color: #fff;
+}
+
+.btn-download {
+  background: linear-gradient(135deg, #1d976c, #93f9b9);
+}
+
+.btn-download:hover {
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(30, 200, 100, 0.4);
+}
+
+.btn-whatsapp {
+  background-color: #25D366;
+}
+
+.btn-whatsapp:hover {
+  background-color: #1ebe5d;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+.btn-email {
+  background-color: #007BFF;
+}
+
+.btn-email:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}

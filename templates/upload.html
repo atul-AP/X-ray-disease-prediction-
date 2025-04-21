@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X-ray Disease Prediction</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="background">
+    <div class="bubbles"></div>
+  </div>
+
+  <div class="container">
+    <h2>X-ray Disease Prediction</h2>
+    <form action="/predict" method="post" enctype="multipart/form-data">
+      <input type="text" name="name" placeholder="Full Name" required />
+      <input type="number" name="age" placeholder="Age" required />
+      <input type="number" name="height" placeholder="Height (cm)" required />
+      <input type="number" name="weight" placeholder="Weight (kg)" required />
+      <input type="text" name="blood_group" placeholder="Blood Group" required />
+
+      <label for="file-upload" class="custom-file-upload">
+        Upload X-ray
+        <input type="file" name="xray" id="file-upload" accept="image/*" required />
+      </label>
+
+      <button type="submit" id="predict-btn">Predict</button>
+    </form>
+
+    <div id="loader" class="hidden">🔍 Predicting...</div>
+    {% if prediction %}
+      <div class="result">
+        <h3>Prediction:</h3>
+        <p>{{ prediction }}</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    const form = document.querySelector("form");
+    const loader = document.getElementById("loader");
+    const button = document.getElementById("predict-btn");
+
+    form.addEventListener("submit", () => {
+      loader.classList.remove("hidden");
+      button.disabled = true;
+    });
+  </script>
+</body>
+</html>

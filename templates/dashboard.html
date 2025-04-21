@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>X-Ray Disease Detection Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Inter font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Flatpickr -->
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/a2e0c123cb.js" crossorigin="anonymous"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color:rgb(225, 208, 225);
+      color: #333;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+
+    .filter-bar input,
+    .filter-bar select {
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      min-width: 200px;
+    }
+
+    .report-card {
+      background-color: white;
+      border-radius: 16px;
+      width: 1050px;
+      height: 150px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.07);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      transition: background-color 0.3s;
+    }
+
+    body.dark .report-card {
+      background-color: #1e1e1e;
+    }
+
+    .report-card img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .report-info {
+      flex: 1;
+    }
+
+    .report-info h3 {
+      margin: 0 0 0.5rem;
+    }
+
+    .actions {
+      margin-top: 0.5rem;
+    }
+
+    .actions button {
+      margin-right: 10px;
+      background-color: #3b82f6;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .actions button:hover {
+      background-color: #2563eb;
+    }
+
+    .upload-form {
+      margin-top: 3rem;
+      padding: 1.5rem;
+      border-radius: 12px;
+      width: 1050px;
+      height: 380px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    body.dark .upload-form {
+      background-color: #1f1f1f;
+    }
+
+    .upload-form input,
+    .upload-form button {
+      margin-top: 1rem;
+      padding: 0.7rem;
+      border-radius: 8px;
+      width: 90%;
+    }
+
+    .upload-form input {
+      border: 1px solid #ccc;
+    }
+
+    .upload-form button {
+      background-color: #10b981;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .upload-form button:hover {
+      background-color: #059669;
+    }
+
+    .dark-mode-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 2rem;
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+
+    #diseaseChart {
+      max-width: 50%;
+      height: 300px; 
+      margin: 1rem auto; 
+      display: block;
+    }
+
+
+    .view-all-btn {
+      background-color: #4a63f4;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+  
+    .view-all-btn:hover {
+      background-color: #3a4cd4;
+    }
+    
+    .chatbot {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      width: 350px;
+      height: 500px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 9999;
+    }
+
+    body.dark .chatbot {
+      background-color: #1e1e1e;
+      color: #fff;
+    }
+
+    .chatbot-header {
+      background: #3b82f6;
+      color: #fff;
+      padding: 0.6rem 1rem;
+      font-weight: 600;
+    }
+
+    .chatbot-messages {
+      padding: 0.6rem;
+      height: 350px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .chatbot-message {
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      max-width: 85%;
+      font-size: 0.85rem;
+    }
+
+    .chatbot-message.user {
+      align-self: flex-end;
+      background: #3b82f6;
+      color: white;
+    }
+
+    .chatbot-message.bot {
+      align-self: flex-start;
+      background: #e5e7eb;
+    }
+
+    body.dark .chatbot-message.bot {
+      background: #333;
+      color: white;
+    }
+
+    .chatbot-input {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+
+    .chatbot-input input {
+      flex: 1;
+      border: none;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .chatbot-input button {
+      border: none;
+      padding: 0 1rem;
+      background: #10b981;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .chatbot-input button:hover {
+      background: #059669;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌓</div>
+
+  <div class="container">
+    <h1>📊 X-Ray Disease Dashboard</h1>
+
+    <div class="filter-bar">
+      <input type="text" id="dateFilter" placeholder="Select Date" />
+      <select id="diseaseFilter">
+        <option value="">All Diseases</option>
+        <option value="Pneumonia">Pneumonia</option>
+        <option value="Fracture">Fracture</option>
+        <option value="Healthy">Healthy</option>
+      </select>
+    </div>
+
+    <canvas id="diseaseChart" style="height: 300px; max-width: 50%; display: block; margin: 1rem auto;"></canvas>
+
+
+
+    {% for report in reports %}
+    <div class="report-card">
+      <img src="{{ url_for('static', filename='uploads/' ~ report.filename) }}" alt="X-ray" />
+      <div class="report-info">
+        <h3>{{ report.patient_name }}, Age: {{ report.age }}</h3>
+        <p><strong>Disease:</strong> {{ report.diagnosis }}</p>
+        <p><strong>Confidence:</strong> {{ report.confidence }}%</p>
+        <div class="actions">
+          <a href="{{ url_for('download_report', report_id=report._id) }}">
+            <button>Download PDF</button>
+          </a>
+          <a href="{{ url_for('share_report', report_id=report._id) }}">
+            <button>Share</button>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    
+    <!-- 👇 View All Reports Button -->
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="{{ url_for('all_reports') }}">
+        <button style="padding: 10px 20px; background-color: #4e73df; color: white; border: none; border-radius: 8px; cursor: pointer;">
+          📄 View All Reports
+        </button>
+      </a>
+    </div>
+    
+    
+    
+
+
+    <div class="upload-form">
+      <h3>Upload New X-ray</h3>
+      <form action="/predict" method="post" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Full Name" required>
+        <input type="number" name="age" placeholder="Age" required>
+        <input type="text" name="blood_group" placeholder="Blood Group" required>
+        <input type="file" name="xray" accept="image/*" required>
+        <button type="submit">Analyze X-ray</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Chatbot -->
+  <div class="chatbot">
+    <div class="chatbot-header">💬 Chat with AI</div>
+    <div class="chatbot-messages" id="chat_response">
+      <div class="chatbot-message bot">Ask about symptoms, reports, or precautions!</div>
+    </div>
+    <div class="chatbot-input">
+      <input type="text" id="user_input" placeholder="Type your question..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+    }
+
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark');
+    }
+
+    flatpickr("#dateFilter", {
+      dateFormat: "Y-m-d",
+      allowInput: true,
+    });
+
+    function sendMessage() {
+      const input = document.getElementById('user_input');
+      const text = input.value.trim();
+      const chatBox = document.getElementById('chat_response');
+
+      if (!text) return;
+
+      const userMsg = document.createElement('div');
+      userMsg.className = 'chatbot-message user';
+      userMsg.textContent = text;
+      chatBox.appendChild(userMsg);
+      input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'chatbot-message bot';
+        botMsg.textContent = data.response || 'No response from AI.';
+        chatBox.appendChild(botMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      })
+      .catch(() => {
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'chatbot-message bot';
+        errorMsg.textContent = 'An error occurred. Try again.';
+        chatBox.appendChild(errorMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+    }
+
+    // Chart.js rendering
+    document.addEventListener("DOMContentLoaded", () => {
+      const ctx = document.getElementById('diseaseChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Pneumonia', 'Fracture', 'Healthy'],
+          datasets: [{
+            label: 'Prediction Count',
+            data: [4, 2, 5],
+            backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
